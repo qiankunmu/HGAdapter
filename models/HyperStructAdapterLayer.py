@@ -7,7 +7,7 @@ from adapters.composition import adjust_tensors_for_parallel, Stack, Fuse, Split
     AdapterCompositionBlock, Average
 from adapters.methods.bottleneck import BottleneckLayer
 
-from .HyperStructAdapter import HyperStructAdapter, ParallelHyperStructAdapter, HGbdAdapter
+from .HyperStructAdapter import HyperStructAdapter, ParallelHyperStructAdapter
 from .HyperStructAdapterConfig import HyperStructAdapterConfig
 
 
@@ -40,8 +40,6 @@ class HyperStructAdapterLayer(BottleneckLayer):
 
             if adapter_config.is_parallel:
                 adapter_class = ParallelHyperStructAdapter
-            elif adapter_config.is_newHGbd:
-                adapter_class = HGbdAdapter
             else:
                 adapter_class = HyperStructAdapter
             adapter = adapter_class(

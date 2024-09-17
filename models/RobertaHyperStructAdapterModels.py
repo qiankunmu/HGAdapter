@@ -19,7 +19,7 @@ from transformers.models.roberta.modeling_roberta import RobertaSelfAttention, R
 from transformers.pytorch_utils import find_pruneable_heads_and_indices, prune_linear_layer, apply_chunking_to_forward
 from transformers.utils import logging, add_start_docstrings_to_model_forward, add_code_sample_docstrings
 
-from adapters.lora import Linear as LoRALinear
+from adapters.methods.lora import LoRALinear
 
 from .BertHyperStructAdaptersMixins import BertSelfOutputHyperStructAdaptersMixin, BertOutputHyperStructAdaptersMixin
 
