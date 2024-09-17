@@ -5,9 +5,10 @@ import torch
 from torch.utils.data import DataLoader
 from tqdm import tqdm
 from transformers import RobertaConfig, RobertaTokenizer, EncoderDecoderConfig, RobertaForCausalLM, \
-    GenerationConfig, get_linear_schedule_with_warmup
+    GenerationConfig
 import numpy as np
 from tree_sitter import Language, Parser
+import tree_sitter_ruby, tree_sitter_javascript, tree_sitter_java, tree_sitter_python, tree_sitter_go, tree_sitter_php
 import evaluate
 from bleu.bleu import Bleu
 
@@ -21,10 +22,10 @@ from models.HyperStructAdapterConfig import HyperStructAdapterConfig
 
 
 def main():
-    pretrain_model_name_or_path = "../pre_train_models/codebert-base"
+    pretrain_model_name_or_path = "codebert-base"
     src_data_dir = "data/dataset"
     data_dir = "data/processed_data_hyper"
-    output_dir = "work_dir/codebert-newhgbd-adapter"
+    output_dir = "work_dir/codebert-hyperstruct-adapter"
 
     train_batch_size = 64
     eval_batch_size = 4
@@ -35,13 +36,13 @@ def main():
     max_tgt_len = 128
     reduction_factor = 12
     num_heads = 8
-    dropout_out = 0
+    dropout_out = 0.2
     use_norm = False
-    device = torch.device("cuda:1" if torch.cuda.is_available() else "cpu")
+    device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
     # device = torch.device("cpu")
     patience = 2
-    model_name = "codebert-hg-adapter1"
-    parameters = f"batch size={train_batch_size} learning rate={learning_rate} reduction_factor={reduction_factor} num_heads={num_heads} adam dropout={dropout_out} nonorm"
+    model_name = "codebert-hyperstruct-adapter"
+    parameters = f"batch size={train_batch_size} learning rate={learning_rate} reduction_factor={reduction_factor} num_heads={num_heads} dropout={dropout_out}"
     mini_batch_size = 4
     assert train_batch_size % mini_batch_size == 0, "train_batch_size can not be divisible by mini_batch_size"
     num_mini_batch = train_batch_size // mini_batch_size
@@ -56,8 +57,13 @@ def main():
 
     tokenizer = RobertaTokenizer.from_pretrained(pretrain_model_name_or_path)
 
-    # languages = ["ruby", "python", "java", "javascript", "go", "php"]
-    languages = ["ruby"]
+    language_dict = {"ruby": tree_sitter_ruby.language(), "python": tree_sitter_python.language(),
+                     "java": tree_sitter_java.language(),
+                     "javascript": tree_sitter_javascript.language(), "go": tree_sitter_go.language(),
+                     "php": tree_sitter_php.language_php()}
+
+    languages = ["ruby", "python", "java", "javascript", "go", "php"]
+    # languages = ["ruby"]
     result_record = {}
     for language in languages:
         print(f"start {language}")
@@ -76,15 +82,12 @@ def main():
         text_save_path = os.path.join(model_save_dir, f"{language}-pred-texts.txt")
         language_result_save_path = os.path.join(output_dir, f"{language}-results.csv")
 
-        LANGUAGE = Language('../tree-sitters/my-languages.so', language)
-        parser = Parser()
-        parser.set_language(LANGUAGE)
+        LANGUAGE = Language(language_dict[language])
+        parser = Parser(LANGUAGE)
 
         # Initialize model
         encoder = MyRobertaHyperStructAdapterModel.from_pretrained(pretrain_model_name_or_path)
 
-        # decoder_config = RobertaConfig.from_pretrained(pretrain_model_name_or_path, is_decoder=True,
-        #                                                add_cross_attention=True)
         decoder_config = RobertaConfig(vocab_size=encoder.config.vocab_size, bos_token_id=encoder.config.bos_token_id,
                                        eos_token_id=encoder.config.eos_token_id,
                                        pad_token_id=encoder.config.pad_token_id, hidden_size=encoder.config.hidden_size,
@@ -124,13 +127,8 @@ def main():
 
         optimizer = torch.optim.Adam(filter(lambda p: p.requires_grad, model.parameters()), lr=learning_rate)
         num_steps = (((len(train_dataloader) - 1) // num_mini_batch) + 1) * num_epochs
-        # scheduler = get_linear_schedule_with_warmup(optimizer, num_warmup_steps=num_steps * 0.1,
-        #                                             num_training_steps=num_steps)
         scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, mode='max', factor=0.1, patience=patience - 1,
                                                                threshold=1e-6, verbose=True, eps=1e-12)
-
-        # valid_loss, valid_bleu4_micro, valid_bleu4_macro = eval(model, valid_dataloader, tokenizer, device,
-        #                                                         text_save_path)
 
         best_score = 0
         best_bleu4_micro = 0
@@ -159,7 +157,6 @@ def main():
                     if (i + 1) % num_mini_batch == 0 or (i + 1) == len(train_dataloader):
                         optimizer.step()
                         optimizer.zero_grad()
-                        # scheduler.step()
 
                     if i % print_steps == 0:
                         print(f"{language} epoch={epoch} loss={train_loss / (i + 1)}")
@@ -254,7 +251,6 @@ def eval(model, dataloader, tokenizer, device, text_save_path=None):
     generation_config = GenerationConfig.from_model_config(model.config)
     generation_config.max_new_tokens = 128
     generation_config.num_beams = 4
-    # smooth = SmoothingFunction().method2
 
     model.eval()
     losses = []
@@ -277,8 +273,6 @@ def eval(model, dataloader, tokenizer, device, text_save_path=None):
                 labels_text = tokenizer.batch_decode(labels, skip_special_tokens=True)
 
                 for pred_text, label_text in zip(preds_text, labels_text):
-                    # preds_texts.append(pred_text.strip().split())
-                    # labels_texts.append([label_text.strip().split()])
                     preds_texts.append(pred_text.strip().lower())
                     labels_texts.append([label_text.strip().lower()])
 
@@ -288,20 +282,16 @@ def eval(model, dataloader, tokenizer, device, text_save_path=None):
         file = open(text_save_path, "w+")
         file2 = open(text_save_path[:-14] + "refer-texts.txt", "w+")
 
-    # bleu4_micro = corpus_bleu(labels_texts, preds_texts, smoothing_function=smooth)
+    # you can also use this bleu
     # bleu = evaluate.load("bleu.py")
     bleu = Bleu()
     bleu4_micro = bleu.compute(predictions=preds_texts, references=labels_texts, smooth=True)["bleu"]
     bleu4_macros = []
     for pred_text, label_text in zip(preds_texts, labels_texts):
-        # bleu4_macros.append(sentence_bleu(label_text, pred_text, smoothing_function=smooth))
         if len(pred_text) == 0:
-            # print("none pred happen, pred=", pred_text, "\nlabel=", label_text)
             pred_text = "<pad>"
         bleu4_macros.append(bleu.compute(predictions=[pred_text], references=[label_text], smooth=True)["bleu"])
         if text_save_path:
-            # file.write(" ".join(pred_text) + "\n")
-            # file2.write(" ".join(label_text[0]) + "\n")
             file.write(pred_text + "\n")
             file2.write(label_text[0] + "\n")
 
@@ -324,7 +314,6 @@ def run_test():
     eval_batch_size = 32
     learning_rate = 5e-5
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-    # device = torch.device("cpu")
     model_name = "codebert-hyperstruct-adapter1"
     parameters = f"batch size={train_batch_size} learning rate={learning_rate} adam"
 
@@ -338,8 +327,13 @@ def run_test():
 
     tokenizer = RobertaTokenizer.from_pretrained(pretrain_model_name_or_path)
 
-    # languages = ["ruby", "python", "java", "javascript", "go", "php"]
-    languages = ["ruby"]
+    language_dict = {"ruby": tree_sitter_ruby.language(), "python": tree_sitter_python.language(),
+                     "java": tree_sitter_java.language(),
+                     "javascript": tree_sitter_javascript.language(), "go": tree_sitter_go.language(),
+                     "php": tree_sitter_php.language_php()}
+
+    languages = ["ruby", "python", "java", "javascript", "go", "php"]
+    # languages = ["ruby"]
     result_record = {}
     for language in languages:
         print(f"start {language}")
@@ -354,15 +348,12 @@ def run_test():
         text_save_path = os.path.join(model_save_dir, f"{language}-pred-texts.txt")
         language_result_save_path = os.path.join(output_dir, f"{language}-results.csv")
 
-        LANGUAGE = Language('../tree-sitters/my-languages.so', language)
-        parser = Parser()
-        parser.set_language(LANGUAGE)
+        LANGUAGE = Language(language_dict[language])
+        parser = Parser(LANGUAGE)
 
         # Initialize model
         encoder = MyRobertaHyperStructAdapterModel.from_pretrained(pretrain_model_name_or_path)
 
-        # decoder_config = RobertaConfig.from_pretrained(pretrain_model_name_or_path, is_decoder=True,
-        #                                                add_cross_attention=True)
         decoder_config = RobertaConfig(vocab_size=encoder.config.vocab_size, bos_token_id=encoder.config.bos_token_id,
                                        eos_token_id=encoder.config.eos_token_id,
                                        pad_token_id=encoder.config.pad_token_id, hidden_size=encoder.config.hidden_size,
