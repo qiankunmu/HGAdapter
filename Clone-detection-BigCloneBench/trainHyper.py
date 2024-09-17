@@ -3,13 +3,14 @@ import os
 import torch
 from torch.utils.data import DataLoader, RandomSampler
 from tqdm import tqdm
-from transformers import RobertaTokenizer, RobertaConfig, get_linear_schedule_with_warmup
+from transformers import RobertaTokenizer, RobertaConfig
 import numpy as np
 from sklearn.metrics import precision_score, recall_score, f1_score
 import pandas as pd
 from tree_sitter import Language, Parser
+import tree_sitter_java
 
-from MyDataset import CloneDetectionBCBHyperDataset, CloneDetectionBCBHyperAblationCollater, CloneDetectionBCBHyperCollater
+from MyDataset import CloneDetectionBCBHyperDataset, CloneDetectionBCBHyperCollater
 from model import CloneDetectionBCBHyperModel
 import sys
 
@@ -19,7 +20,7 @@ from models.HyperStructAdapterConfig import HyperStructAdapterConfig
 
 
 def main():
-    pretrain_model_name_or_path = "../pre_train_models/codebert-base"
+    pretrain_model_name_or_path = "codebert-base"
     src_data_path = "data/dataset/data.jsonl"
     data_path = "data/processed_data_hyper"
     train_idx_file_path = "data/dataset/train.txt"
@@ -34,9 +35,9 @@ def main():
     print_steps = 1000
     train_ratio = 0.1
     patience = 2
-    device = torch.device("cuda:1" if torch.cuda.is_available() else "cpu")
-    model_name = "codebert-hyperstruct-adapter4"
-    parameters = f"batch size={train_batch_size} learning rate={learning_rate} no trans"
+    device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+    model_name = "codebert-hyperstruct-adapter"
+    parameters = f"batch size={train_batch_size} learning rate={learning_rate}"
     mini_batch_size = 4
     assert train_batch_size % mini_batch_size == 0, "train_batch_size can not be divisible by mini_batch_size"
     num_mini_batch = train_batch_size // mini_batch_size
@@ -51,9 +52,8 @@ def main():
     roberta_model = MyRobertaHyperStructAdapterModel.from_pretrained(pretrain_model_name_or_path, architectures=["RobertaModel"])
     tokenizer = RobertaTokenizer.from_pretrained(pretrain_model_name_or_path)
 
-    LANGUAGE = Language('../tree-sitters/my-languages.so', 'java')
-    parser = Parser()
-    parser.set_language(LANGUAGE)
+    LANGUAGE = Language(tree_sitter_java.language())
+    parser = Parser(LANGUAGE)
 
     adapter_config = HyperStructAdapterConfig(use_hyper=True, num_edge_types=3)
     roberta_model.add_adapter("clone-detection", config=adapter_config)
@@ -79,9 +79,7 @@ def main():
     optimizer = torch.optim.AdamW(filter(lambda p: p.requires_grad, model.parameters()), lr=learning_rate)
     scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, mode='max', factor=0.1, patience=patience - 1,
                                                            verbose=True, eps=1e-12)
-    # num_steps = len(train_dataloader) * num_epochs
-    # scheduler = get_linear_schedule_with_warmup(optimizer, num_warmup_steps=num_steps * 0.2,
-    #                                             num_training_steps=num_steps)
+
     loss_function = torch.nn.CrossEntropyLoss()
 
     best_score = -1
@@ -108,7 +106,6 @@ def main():
                 if (i + 1) % num_mini_batch == 0 or (i + 1) == len(train_dataloader):
                     optimizer.step()
                     optimizer.zero_grad()
-                    # scheduler.step()
 
                 if i % print_steps == 0:
                     print(f"epoch={epoch} loss={train_loss / (i + 1)}")
