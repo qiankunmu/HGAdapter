@@ -2,7 +2,7 @@ This the source code implementation of HGAdapter: Hypergraph-based Structural Ad
 Due to the paper being under peer review, in accordance with the principle of anonymity, we temporarily withhold the title, authors and contents of the paper.
 ## Requirments
 We conduct experiment in Ubuntu 18.04.6 LTS and in python 3.12. 
-We mainly implement our method by [pytorch 2.4](https://pytorch.org/docs/stable/index.html), [transformers 4.44](https://huggingface.co/docs/transformers) and [adapters 1.0](https://docs.adapterhub.ml/). 
+We mainly implement our method by [pytorch 2.4](https://pytorch.org/docs/stable/index.html), [transformers 4.35](https://huggingface.co/docs/transformers) and [adapters 0.9](https://docs.adapterhub.ml/). 
 We train our model on a RTX 3090. 
 The required environments are listed in `requirements.txt`.
 
