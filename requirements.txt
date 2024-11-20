@@ -1,4 +1,4 @@
-adapters==1.0.0
+adapters==0.1.0
 datasets==3.0.0
 evaluate==0.4.3
 huggingface-hub==0.24.7
@@ -8,12 +8,12 @@ pandas==2.2.2
 pyarrow==17.0.0
 safetensors==0.4.5
 scikit-learn==1.5.1
-tokenizers==0.19.1
+tokenizers==0.15.2
 torch==2.4.1
 torchaudio==2.4.1
 torchvision==0.19.1
 tqdm==4.66.5
-transformers==4.44.0
+transformers==4.35.2
 tree-sitter==0.23.0
 tree-sitter-c==0.23.0
 tree-sitter-cpp==0.23.0
