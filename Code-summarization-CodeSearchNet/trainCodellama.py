@@ -54,6 +54,7 @@ def main():
 
     tokenizer = CodeLlamaTokenizer.from_pretrained(pretrain_model_name_or_path)
     tokenizer.pad_token_id = tokenizer.unk_token_id
+    tokenizer.padding_side = 'left'
 
     language_dict = {"ruby": tree_sitter_ruby.language(), "python": tree_sitter_python.language(),
                      "java": tree_sitter_java.language(),
