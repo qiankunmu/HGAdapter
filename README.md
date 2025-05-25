@@ -1,4 +1,4 @@
-This the source code implementation of HGAdapter: Hypergraph-based Structural Adapter Fine-tuning Pre-Trained Model.  
+This the source code implementation of HGAdapter: Hypergraph-based Adapter in Language Models for Code Summarization and Clone Detection.  
 Due to the paper being under peer review, in accordance with the principle of anonymity, we temporarily withhold the title, authors and contents of the paper.
 ## Requirments
 We conduct experiment in Ubuntu 18.04.6 LTS and in python 3.12. 
@@ -46,17 +46,17 @@ rm -r */*.txt
 ```
 
 ## Usages
-For code clone detection, you can directly run `trainHyper.py`, it will train, valid and test the pre-trained models with HGAdapter inserted. 
+For code clone detection, you can directly run `trainHyper.py`, it will train, valid and test the pre-trained language models with HGAdapter inserted. 
 You can modify `pretrain_model_name_or_path` in `trainHyper.py` to choose the pre-trained model, such as 
 ```
 pretrain_model_name_or_path = "codebert-base"
 ```
-The `"codebert-base"` is CodeBERT, you can also choose `"graphcodebert-base"`, i.e., GraphCodeBERT.  
+The `"codebert-base"` is CodeBERT, you can also choose `"graphcodebert-base"` and `"unixcoder-base"`, i.e., GraphCodeBERT and UnixCoder. 
 You can also download pre-trained models into `pre_train_models/`, modify the `pretrain_model_name_or_path` to the corresponding path.  
 
-For code summarization task, you can directly run `trainCodellama.py`, it will train, valid and test the Codellama with HGAdapter inserted.  
-You can directly run `trainHyper.py`, it will train, valid and test the CodeBERT with HGAdapter inserted.  
-You can also download `"CodeLlama-7b"` and `"codebert-base"` into `pre_train_models/`, modify the `pretrain_model_name_or_path` to the corresponding path.  
+For code summarization task, you can directly run `trainCodellama.py`, it will train, valid and test the Llama models with HGAdapter inserted.  
+You can directly run `trainHyper.py`, it will train, valid and test the CodeBERT, GraphCodeBERT or UnixCoder with HGAdapter inserted.  
+You can also download `"CodeLlama-7b"` and `"codebert-base"`, etc. into `pre_train_models/`, modify the `pretrain_model_name_or_path` to the corresponding path.  
 
 After the run is complete, the model will be saved to the `work_dir`, and the results will be outputted and saved as a CSV in `work_dir`.  
 The implementation of the HGAdapter is located in the `models` folder.  
