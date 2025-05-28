@@ -1,0 +1,17 @@
+adapters==1.1.1
+datasets==3.6.0
+evaluate==0.4.3
+numpy==2.2.6
+pandas==2.2.3
+scikit_learn==1.4.2
+torch==2.4.1
+tqdm==4.66.4
+transformers==4.48.3
+tree_sitter==0.24.0
+tree_sitter_go==0.23.4
+tree_sitter_java==0.23.5
+tree_sitter_javascript==0.23.1
+tree_sitter_php==0.23.11
+tree_sitter_python==0.23.6
+tree_sitter_ruby==0.23.1
+sentencepiece==0.2.0
