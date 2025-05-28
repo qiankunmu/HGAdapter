@@ -22,7 +22,7 @@ from models.HGAdapterConfig import HGAdapterConfig
 
 
 def main():
-    pretrain_model_name_or_path = "../pre_train_models/codebert-base"
+    pretrain_model_name_or_path = "codebert-base"
     src_data_dir = "data/dataset"
     data_dir = "data/processed_data_hyper"
     output_dir = "work_dir/codebert-hgadapter"
