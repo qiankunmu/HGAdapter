@@ -34,6 +34,7 @@ def main():
     num_epochs = 1
     print_steps = 1000
     train_ratio = 0.1
+    reduction_factor = 12
     patience = 2
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
     model_name = "codebert-hgadapter"
@@ -55,7 +56,7 @@ def main():
     LANGUAGE = Language(tree_sitter_java.language())
     parser = Parser(LANGUAGE)
 
-    adapter_config = HGAdapterConfig(use_hyper=True, num_edge_types=3)
+    adapter_config = HGAdapterConfig(use_hyper=True, num_edge_types=3, reduction_factor=reduction_factor)
     roberta_model.add_adapter("clone-detection", config=adapter_config)
     roberta_model.set_active_adapters("clone-detection")
     roberta_model.train_adapter("clone-detection")
