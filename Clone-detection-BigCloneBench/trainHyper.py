@@ -20,25 +20,25 @@ from models.HGAdapterConfig import HGAdapterConfig
 
 
 def main():
-    pretrain_model_name_or_path = "C:/Projects/CodeStructAdapter/pre_train_models/codebert-base"
-    src_data_path = "C:/Projects/CodeStructAdapter/Clone-detection-BigCloneBench/data/dataset/data.jsonl"
-    data_path = "C:/Projects/CodeStructAdapter/Clone-detection-BigCloneBench/data/processed_data_hyper"
-    train_idx_file_path = "C:/Projects/CodeStructAdapter/Clone-detection-BigCloneBench/data/dataset/train.txt"
-    valid_idx_file_path = "C:/Projects/CodeStructAdapter/Clone-detection-BigCloneBench/data/dataset/temp.txt"
-    test_idx_file_path = "C:/Projects/CodeStructAdapter/Clone-detection-BigCloneBench/data/dataset/temp.txt"
+    pretrain_model_name_or_path = "codebert-base"
+    src_data_path = "data/dataset/data.jsonl"
+    data_path = "data/processed_data_hyper"
+    train_idx_file_path = "data/dataset/train.txt"
+    valid_idx_file_path = "data/dataset/valid.txt"
+    test_idx_file_path = "data/dataset/test.txt"
     output_dir = "work_dir/codebert-hgadapter"
 
-    train_batch_size = 4
-    eval_batch_size = 32
+    train_batch_size = 64
+    eval_batch_size = 64
     learning_rate = 5e-5
     num_epochs = 1
     print_steps = 1000
-    train_ratio = 0.0001
+    train_ratio = 0.1
     patience = 2
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
     model_name = "codebert-hgadapter"
     parameters = f"batch size={train_batch_size} learning rate={learning_rate}"
-    mini_batch_size = 4
+    mini_batch_size = 64
     assert train_batch_size % mini_batch_size == 0, "train_batch_size can not be divisible by mini_batch_size"
     num_mini_batch = train_batch_size // mini_batch_size
 
@@ -90,7 +90,7 @@ def main():
         model.train()
         train_loss = 0
         i = 0
-        with tqdm(total=len(train_dataloader), position=0, leave=True) as bar:
+        with tqdm(total=len(train_dataloader)) as bar:
             for i, (input_ids, attention_mask, hyperedge_indexs, edge_types, label) in enumerate(train_dataloader):
                 input_ids = input_ids.to(device)
                 attention_mask = attention_mask.to(device)
