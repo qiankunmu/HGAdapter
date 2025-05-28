@@ -20,27 +20,26 @@ from models.LlamaHGAdapterModels import MyLlamaHGAdapterForCausalLM
 
 
 def main():
-    pretrain_model_name_or_path = "C:/Projects/CodeStructAdapter/pre_train_models/TinyLlama_v1.1_math_code"
-    src_data_dir = "C:/Projects/CodeStructAdapter/Code-summarization-CodeSearchNet/data/dataset"
-    data_dir = "C:/Projects/CodeStructAdapter/Code-summarization-CodeSearchNet/data/processed_data_codellama"
-    output_dir = "work_dir/tinyllama-hgadapter"
+    pretrain_model_name_or_path = "CodeLlama-7b"
+    src_data_dir = "data/dataset"
+    data_dir = "data/processed_data_llama"
+    output_dir = "work_dir/codellama-hgadapter"
 
     train_batch_size = 64
-    eval_batch_size = 1
+    eval_batch_size = 64
     learning_rate = 1e-4
-    num_epochs = 1
+    num_epochs = 10
     print_steps = 1000
-    max_seq_len = 512
+    max_seq_len = 1024
     max_tgt_len = 128
     reduction_factor = 64
     num_heads = 8
     dropout_out = 0.2
-    # device = torch.device("cpu")
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
     patience = 2
-    model_name = "tinyllama-hgadapter"
+    model_name = "codellama-hgadapter"
     parameters = f"batch size={train_batch_size} learning rate={learning_rate} num_heads={num_heads} dropout={dropout_out}"
-    mini_batch_size = 1
+    mini_batch_size = 64
     assert train_batch_size % mini_batch_size == 0, "train_batch_size can not be divisible by mini_batch_size"
     num_mini_batch = train_batch_size // mini_batch_size
 
@@ -61,8 +60,7 @@ def main():
                      "javascript": tree_sitter_javascript.language(), "go": tree_sitter_go.language(),
                      "php": tree_sitter_php.language_php()}
 
-    # languages = ["ruby", "python", "java", "javascript", "go", "php"]
-    languages = ["ruby"]
+    languages = ["ruby", "python", "java", "javascript", "go", "php"]
     result_record = {}
     for language in languages:
         print(f"start {language}")
