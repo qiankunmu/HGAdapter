@@ -1,18 +1,12 @@
-This the source code implementation of HGAdapter: Hypergraph-based Adapter in Language Models for Code Summarization and Clone Detection.  
-Due to the paper being under peer review, in accordance with the principle of anonymity, we temporarily withhold the title, authors and contents of the paper.
+This the source code implementation of HGAdapter in paper *HGAdapter: Hypergraph-based Adapter in Language Models for Code Summarization and Clone Detection*. 
+Due to the paper being under peer review, in accordance with the principle of anonymity, we temporarily withhold the authors and contents of the paper.
 ## Requirments
 We conduct experiment in Ubuntu 18.04.6 LTS and in python 3.12. 
-We mainly implement our method by [pytorch 2.4](https://pytorch.org/docs/stable/index.html), [transformers 4.35](https://huggingface.co/docs/transformers) and [adapters 0.9](https://docs.adapterhub.ml/). 
+We mainly implement our method by [pytorch 2.4](https://pytorch.org/docs/stable/index.html), [transformers 4.48](https://huggingface.co/docs/transformers) and [adapters 1.1](https://docs.adapterhub.ml/). 
 We train our model on a RTX 3090. 
 The required environments are listed in `requirements.txt`.
 
 ## Datasets
-### BigCloneBench
-BigCloneBench is the dataset for code clone detection task. 
-We use the edition from [CodeXGLUE](https://github.com/microsoft/CodeXGLUE). 
-You need to download the [datasets](https://github.com/microsoft/CodeXGLUE/tree/main/Code-Code/Clone-detection-BigCloneBench/dataset). 
-You can download [data.jsonl](https://github.com/microsoft/CodeXGLUE/blob/main/Code-Code/Clone-detection-BigCloneBench/dataset/data.jsonl), [train.txt](https://github.com/microsoft/CodeXGLUE/blob/main/Code-Code/Clone-detection-BigCloneBench/dataset/train.txt), [valid.txt](https://github.com/microsoft/CodeXGLUE/blob/main/Code-Code/Clone-detection-BigCloneBench/dataset/valid.txt) and [test.txt](https://github.com/microsoft/CodeXGLUE/blob/main/Code-Code/Clone-detection-BigCloneBench/dataset/test.txt), then put them into `Clone-detection-BigCloneBench/data/dataset`. 
-
 ### CodeSearchNet
 CodeSearchNet is the dataset for code summarization task. 
 We use the edition from [CodeXGLUE](https://github.com/microsoft/CodeXGLUE). 
@@ -45,20 +39,41 @@ rm -r */final
 rm -r */*.txt
 ```
 
+### BigCloneBench
+BigCloneBench is the dataset for code clone detection task. 
+We use the edition from [CodeXGLUE](https://github.com/microsoft/CodeXGLUE). 
+You need to download the [datasets](https://github.com/microsoft/CodeXGLUE/tree/main/Code-Code/Clone-detection-BigCloneBench/dataset). 
+You can download [data.jsonl](https://github.com/microsoft/CodeXGLUE/blob/main/Code-Code/Clone-detection-BigCloneBench/dataset/data.jsonl), [train.txt](https://github.com/microsoft/CodeXGLUE/blob/main/Code-Code/Clone-detection-BigCloneBench/dataset/train.txt), [valid.txt](https://github.com/microsoft/CodeXGLUE/blob/main/Code-Code/Clone-detection-BigCloneBench/dataset/valid.txt) and [test.txt](https://github.com/microsoft/CodeXGLUE/blob/main/Code-Code/Clone-detection-BigCloneBench/dataset/test.txt), then put them into `Clone-detection-BigCloneBench/data/dataset`. 
+
+
 ## Usages
-For code clone detection, you can directly run `trainHyper.py`, it will train, valid and test the pre-trained language models with HGAdapter inserted. 
+For code summarization task, you can run `trainLlama.py`, it can train, valid and test the Llama series models with HGAdapter inserted. 
+You can modify `pretrain_model_name_or_path` in `trainLlama.py` to choose the pre-trained model, such as 
+```
+pretrain_model_name_or_path = "CodeLlama-7b"
+```
+You can also choose `"TinyLlama_v1.1_math_code"` or other Llama series models. 
+You can run `trainHyper.py`, it can train, valid and test the RoBERTa series models with HGAdapter inserted. 
 You can modify `pretrain_model_name_or_path` in `trainHyper.py` to choose the pre-trained model, such as 
 ```
 pretrain_model_name_or_path = "codebert-base"
 ```
-The `"codebert-base"` is CodeBERT, you can also choose `"graphcodebert-base"` and `"unixcoder-base"`, i.e., GraphCodeBERT and UnixCoder. 
-You can also download pre-trained models into `pre_train_models/`, modify the `pretrain_model_name_or_path` to the corresponding path.  
+You can also choose `"roberta-base"`, `"graphcodebert-base"`, `"unixcoder-base"` or other RoBERTa series models.
 
-For code summarization task, you can directly run `trainCodellama.py`, it will train, valid and test the Llama models with HGAdapter inserted.  
-You can directly run `trainHyper.py`, it will train, valid and test the CodeBERT, GraphCodeBERT or UnixCoder with HGAdapter inserted.  
-You can also download `"CodeLlama-7b"` and `"codebert-base"`, etc. into `pre_train_models/`, modify the `pretrain_model_name_or_path` to the corresponding path.  
+
+For code clone detection, you can run `trainHyper.py`, it can train, valid and test the RoBERTa series models with HGAdapter inserted. 
+You can modify `pretrain_model_name_or_path` in `trainHyper.py` to choose the pre-trained model, such as 
+```
+pretrain_model_name_or_path = "codebert-base"
+```
+You can also choose `"graphcodebert-base"` and `"unixcoder-base"`. 
+
+
+You can also locally download pre-trained models into `pre_train_models/`, modify the `pretrain_model_name_or_path` to the corresponding path.  
+
 
 After the run is complete, the model will be saved to the `work_dir`, and the results will be outputted and saved as a CSV in `work_dir`.  
 The implementation of the HGAdapter is located in the `models` folder.  
-You can manually modify hyper-parameters such as `batch_size`, `num_epoch` in trainXXX.py.  
-Due to time constraints, we have not prepared a user-friendly parameter command for running the code. We will optimize the code to make it easier for users to run directly in future.  
+You can manually modify hyper-parameters such as `train_batch_size`, `num_epochs` in trainXXX.py.  
+Due to time constraints, we have not prepared a user-friendly parameter command for running the code. 
+We will optimize the code to make it easier for users to run directly in future.  
