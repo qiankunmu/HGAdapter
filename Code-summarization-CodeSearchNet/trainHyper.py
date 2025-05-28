@@ -22,15 +22,15 @@ from models.HGAdapterConfig import HGAdapterConfig
 
 
 def main():
-    pretrain_model_name_or_path = "C:/Projects/CodeStructAdapter/pre_train_models/codebert-base"
-    src_data_dir = "C:/Projects/CodeStructAdapter/Code-summarization-CodeSearchNet/data/dataset"
-    data_dir = "C:/Projects/CodeStructAdapter/Code-summarization-CodeSearchNet/data/processed_data_hyper"
+    pretrain_model_name_or_path = "../pre_train_models/codebert-base"
+    src_data_dir = "data/dataset"
+    data_dir = "data/processed_data_hyper"
     output_dir = "work_dir/codebert-hgadapter"
 
     train_batch_size = 64
-    eval_batch_size = 4
+    eval_batch_size = 64
     learning_rate = 1e-4
-    num_epochs = 1
+    num_epochs = 10
     print_steps = 1000
     max_seq_len = 512
     max_tgt_len = 128
@@ -42,7 +42,7 @@ def main():
     patience = 2
     model_name = "codebert-hgadapter"
     parameters = f"batch size={train_batch_size} learning rate={learning_rate} reduction_factor={reduction_factor} num_heads={num_heads} dropout={dropout_out}"
-    mini_batch_size = 4
+    mini_batch_size = 64
     assert train_batch_size % mini_batch_size == 0, "train_batch_size can not be divisible by mini_batch_size"
     num_mini_batch = train_batch_size // mini_batch_size
 
@@ -61,8 +61,7 @@ def main():
                      "javascript": tree_sitter_javascript.language(), "go": tree_sitter_go.language(),
                      "php": tree_sitter_php.language_php()}
 
-    # languages = ["ruby", "python", "java", "javascript", "go", "php"]
-    languages = ["python"]
+    languages = ["ruby", "python", "java", "javascript", "go", "php"]
     result_record = {}
     for language in languages:
         print(f"start {language}")
@@ -307,13 +306,13 @@ def run_test():
     pretrain_model_name_or_path = "../pre_train_models/codebert-base"
     src_data_dir = "data/dataset"
     data_dir = "data/processed_data_hyper"
-    output_dir = "work_dir/codebert-hyperstruct-adapter"
+    output_dir = "work_dir/codebert-hgadapter"
 
     train_batch_size = 64
-    eval_batch_size = 32
-    learning_rate = 5e-5
+    eval_batch_size = 64
+    learning_rate = 1e-5
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-    model_name = "codebert-hyperstruct-adapter1"
+    model_name = "codebert-hgadapter1"
     parameters = f"batch size={train_batch_size} learning rate={learning_rate} adam"
 
     if not os.path.exists(output_dir):
@@ -332,7 +331,6 @@ def run_test():
                      "php": tree_sitter_php.language_php()}
 
     languages = ["ruby", "python", "java", "javascript", "go", "php"]
-    # languages = ["ruby"]
     result_record = {}
     for language in languages:
         print(f"start {language}")
@@ -357,7 +355,7 @@ def run_test():
                                        eos_token_id=encoder.config.eos_token_id,
                                        pad_token_id=encoder.config.pad_token_id, hidden_size=encoder.config.hidden_size,
                                        type_vocab_size=encoder.config.type_vocab_size,
-                                       num_hidden_layers=encoder.config.num_hidden_layers, is_decoder=True,
+                                       num_hidden_layers=12, is_decoder=True,
                                        add_cross_attention=True)
         decoder = RobertaForCausalLM(decoder_config)
 
@@ -368,8 +366,8 @@ def run_test():
 
         adapter_config = HGAdapterConfig(use_hyper=True)
         encoder.add_adapter("code-summarization", config=adapter_config)
-        encoder.set_active_adapters(["code-summarization"])
-        encoder.train_adapter(["code-summarization"])
+        encoder.set_active_adapters("code-summarization")
+        encoder.train_adapter("code-summarization")
 
         model.encoder.base_model.load_adapter(model_save_path)
         model.decoder.load_state_dict(torch.load(os.path.join(model_save_path, "decoder_state.bin")))
