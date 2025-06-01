@@ -53,6 +53,7 @@ You can modify `pretrain_model_name_or_path` in `trainLlama.py` to choose the pr
 pretrain_model_name_or_path = "CodeLlama-7b"
 ```
 You can also choose `"TinyLlama_v1.1_math_code"` or other Llama series models. 
+
 You can run `trainHyper.py`, it can train, valid and test the RoBERTa series models with HGAdapter inserted. 
 You can modify `pretrain_model_name_or_path` in `trainHyper.py` to choose the pre-trained model, such as 
 ```
@@ -60,6 +61,12 @@ pretrain_model_name_or_path = "codebert-base"
 ```
 You can also choose `"roberta-base"`, `"graphcodebert-base"`, `"unixcoder-base"` or other RoBERTa series models.
 
+You can run `trainQwen2.py`, it can train, valid and test the Qwen2.5 series models with HGAdapter inserted. 
+You can modify `pretrain_model_name_or_path` in `trainQwen2.py` to choose the pre-trained model, such as 
+```
+pretrain_model_name_or_path = "Qwen2.5-Coder-0.5B"
+```
+You can also choose other Qwen2.5 series models.
 
 For code clone detection, you can run `trainHyper.py`, it can train, valid and test the RoBERTa series models with HGAdapter inserted. 
 You can modify `pretrain_model_name_or_path` in `trainHyper.py` to choose the pre-trained model, such as 
