@@ -20,27 +20,26 @@ from models.Qwen2HGAdapterModels import MyQwen2HGAdapterForCausalLM
 
 
 def main():
-    pretrain_model_name_or_path = "C:/Projects/CodeStructAdapter/pre_train_models/Qwen2.5-Coder-0.5B"
-    src_data_dir = "C:/Projects/CodeStructAdapter/Code-summarization-CodeSearchNet/data/dataset"
-    data_dir = "C:/Projects/CodeStructAdapter/Code-summarization-CodeSearchNet/data/processed_data_qwen2_5coder"
+    pretrain_model_name_or_path = "Qwen2.5-Coder-0.5B"
+    src_data_dir = "data/dataset"
+    data_dir = "data/processed_data_qwen2_5coder"
     output_dir = "work_dir/qwen2_5coder-hgadapter"
 
     train_batch_size = 64
-    eval_batch_size = 1
+    eval_batch_size = 64
     learning_rate = 1e-4
-    num_epochs = 1
+    num_epochs = 10
     print_steps = 1000
     max_seq_len = 512
     max_tgt_len = 128
     reduction_factor = 14
     num_heads = 8
     dropout_out = 0.2
-    # device = torch.device("cpu")
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
     patience = 2
     model_name = "qwen2_5coder-hgadapter"
     parameters = f"batch size={train_batch_size} learning rate={learning_rate} num_heads={num_heads} dropout={dropout_out}"
-    mini_batch_size = 1
+    mini_batch_size = 64
     assert train_batch_size % mini_batch_size == 0, "train_batch_size can not be divisible by mini_batch_size"
     num_mini_batch = train_batch_size // mini_batch_size
 
