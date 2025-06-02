@@ -101,7 +101,8 @@ def main():
         test_dataloader = DataLoader(test_dataset, eval_batch_size, False, collate_fn=collate_fn2)
 
         # Initialize model
-        model = MyQwen2HGAdapterForCausalLM.from_pretrained(pretrain_model_name_or_path, torch_dtype=torch.bfloat16)
+        model = MyQwen2HGAdapterForCausalLM.from_pretrained(pretrain_model_name_or_path, torch_dtype=torch.bfloat16, 
+                                                            pad_token_id=tokenizer.pad_token_id)
         adapter_config = HGAdapterConfig(use_hyper=True, reduction_factor=reduction_factor, num_heads=num_heads,
                                          dropout=dropout_out, torch_dtype="bfloat16")
 
@@ -246,11 +247,12 @@ def eval(model, dataloader, tokenizer, device, text_save_path=None):
         with tqdm(total=len(dataloader)) as bar:
             for input_ids, attention_mask, hyperedge_indexs, edge_types, labels in dataloader:
                 input_ids = input_ids.to(device)
+                attention_mask = attention_mask.to(device)
                 labels = labels.to(device)
                 hyperedge_indexs = hyperedge_indexs.to(device)
                 edge_types = edge_types.to(device)
-                generated_ids = model.generate(input_ids, generation_config, hyperedge_indexs=hyperedge_indexs,
-                                               edge_types=edge_types)
+                generated_ids = model.generate(input_ids, generation_config, attention_mask=attention_mask, 
+                                               hyperedge_indexs=hyperedge_indexs, edge_types=edge_types)
                 preds = generated_ids[:, input_ids.shape[1]:]
                 preds_text = tokenizer.batch_decode(preds, skip_special_tokens=True)
                 labels_text = tokenizer.batch_decode(labels, skip_special_tokens=True)
