@@ -1,4 +1,4 @@
-This the source code implementation of HGAdapter in paper *HGAdapter: Hypergraph-based Adapter in Language Models for Code Summarization and Clone Detection*. 
+This is the source code implementation of HGAdapter in paper *HGAdapter: Hypergraph-based Adapter in Language Models for Code Summarization and Clone Detection*. 
 Due to the paper being under peer review, in accordance with the principle of anonymity, we temporarily withhold the authors and contents of the paper.
 ## Requirments
 We conduct experiment in Ubuntu 18.04.6 LTS and in python 3.12. 
