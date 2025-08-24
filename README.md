@@ -23,7 +23,7 @@ unzip dataset.zip
 cd dataset
 ```  
 
-Second, you can download [ruby.zip](https://huggingface.co/datasets/code-search-net/code_search_net/blob/main/data/ruby.zip), [javascript.zip](https://huggingface.co/datasets/code-search-net/code_search_net/blob/main/data/javascript.zip), [java.zip](https://huggingface.co/datasets/code-search-net/code_search_net/blob/main/data/java.zip), [python.zip](https://huggingface.co/datasets/code-search-net/code_search_net/blob/main/data/python.zip), [php.zip](https://huggingface.co/datasets/code-search-net/code_search_net/blob/main/data/php.zip) and [go.zip](https://huggingface.co/datasets/code-search-net/code_search_net/blob/main/data/go.zip) from [huggingface](https://huggingface.co/datasets/code-search-net/code_search_net/tree/main/data).  
+Second, you can download [ruby.zip](https://huggingface.co/datasets/code-search-net/code_search_net/blob/main/data/ruby.zip), [javascript.zip](https://huggingface.co/datasets/code-search-net/code_search_net/blob/main/data/javascript.zip), [java.zip](https://huggingface.co/datasets/code-search-net/code_search_net/blob/main/data/java.zip), [python.zip](https://huggingface.co/datasets/code-search-net/code_search_net/blob/main/data/python.zip), [php.zip](https://huggingface.co/datasets/code-search-net/code_search_net/blob/main/data/php.zip) and [go.zip](https://huggingface.co/datasets/code-search-net/code_search_net/blob/main/data/go.zip) from [Hugging Face](https://huggingface.co/datasets/code-search-net/code_search_net/tree/main/data).  
 Then, put them into `Code-summarization-CodeSearchNet/data/dataset` and unzip them. 
 ```
 unzip python.zip
