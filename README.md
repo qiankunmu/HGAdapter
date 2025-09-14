@@ -1,6 +1,6 @@
 # Hypergraph-based Adapter (HGAdapter)
 ## Introduction
-This is the source code implementation of Hypergraph-based Adapter (HGAdapter) in paper *HGAdapter: Hypergraph-based Adapter in Language Models for Code Summarization and Clone Detection*. 
+This is the source code implementation of Hypergraph-based Adapter (HGAdapter) in paper *HGAdapter: Hypergraph-based Adapters in Language Models for Code Summarization and Clone Detection*. 
 Our paper is accepted by the 2025 Conference on Empirical Methods in Natural Language Processing (EMNLP 2025) as a findings long paper.
 We will update this soon.
 
