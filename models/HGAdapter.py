@@ -11,9 +11,8 @@ class HGAdapter(Adapter):
     def __init__(self, adapter_name, input_size, down_sample, config: HGAdapterConfig, *args, **kwargs):
         super().__init__(adapter_name, input_size, down_sample, config)
 
-        self.use_hyper = config["use_hyper"]
         self.num_edge_types = config["num_edge_types"]
-        self.num_heads = config.num_heads
+        self.num_heads = config["num_heads"]
         self.head_size = self.down_sample // self.num_heads
         assert self.down_sample == self.head_size * self.num_heads, f"down sample {self.down_sample} can not be divisible by num heads {self.num_heads}"
         self.dropout_rate = config["dropout"]
@@ -44,7 +43,7 @@ class HGAdapter(Adapter):
         down = self.non_linearity(x)
         x = down
 
-        if self.use_hyper and hyperedge_indexs is not None:
+        if hyperedge_indexs is not None:
             hyperedge_indexs_s = hyperedge_indexs[:, 0, :]
             hyperedge_indexs_t = hyperedge_indexs[:, 1, :]
             # hyperedge_indexs_st [batch_size, num_relation]
@@ -212,3 +211,4 @@ class HeteroLinear(nn.Module):
             out[mask] = lin(x[mask])
         # out [batch_size, num_relation, down_sample]
         return out
+
