@@ -100,7 +100,7 @@ def main():
                                                                    pad_token_id=tokenizer.pad_token_id)
         model = MyHyperEncoderDecoderModel(config, encoder=encoder, decoder=decoder)
 
-        adapter_config = HGAdapterConfig(use_hyper=True, reduction_factor=reduction_factor, num_heads=num_heads,
+        adapter_config = HGAdapterConfig(reduction_factor=reduction_factor, num_heads=num_heads,
                                          dropout=dropout_out)
         encoder.add_adapter("code-summarization", config=adapter_config)
         encoder.set_active_adapters("code-summarization")
@@ -302,86 +302,6 @@ def eval(model, dataloader, tokenizer, device, text_save_path=None):
     return avg_loss, bleu4_micro, bleu4_macro
 
 
-def run_test():
-    pretrain_model_name_or_path = "../pre_train_models/codebert-base"
-    src_data_dir = "data/dataset"
-    data_dir = "data/processed_data_hyper"
-    output_dir = "work_dir/codebert-hgadapter"
-
-    train_batch_size = 64
-    eval_batch_size = 64
-    learning_rate = 1e-5
-    device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-    model_name = "codebert-hgadapter1"
-    parameters = f"batch size={train_batch_size} learning rate={learning_rate} adam"
-
-    if not os.path.exists(output_dir):
-        os.makedirs(output_dir)
-
-    result_save_path = os.path.join(output_dir, "results.csv")
-    model_save_dir = os.path.join(output_dir, model_name)
-    if not os.path.exists(model_save_dir):
-        os.makedirs(model_save_dir)
-
-    tokenizer = RobertaTokenizer.from_pretrained(pretrain_model_name_or_path)
-
-    language_dict = {"ruby": tree_sitter_ruby.language(), "python": tree_sitter_python.language(),
-                     "java": tree_sitter_java.language(),
-                     "javascript": tree_sitter_javascript.language(), "go": tree_sitter_go.language(),
-                     "php": tree_sitter_php.language_php()}
-
-    languages = ["ruby", "python", "java", "javascript", "go", "php"]
-    result_record = {}
-    for language in languages:
-        print(f"start {language}")
-
-        data_path = os.path.join(data_dir, language)
-        test_data_path = os.path.join(data_path, "test")
-
-        src_data_path = os.path.join(src_data_dir, language)
-        test_src_data_path = os.path.join(src_data_path, "test.jsonl")
-
-        model_save_path = os.path.join(model_save_dir, f"{language}")
-        text_save_path = os.path.join(model_save_dir, f"{language}-pred-texts.txt")
-        language_result_save_path = os.path.join(output_dir, f"{language}-results.csv")
-
-        LANGUAGE = Language(language_dict[language])
-        parser = Parser(LANGUAGE)
-
-        # Initialize model
-        encoder = MyRobertaHGAdapterModel.from_pretrained(pretrain_model_name_or_path)
-
-        decoder_config = RobertaConfig(vocab_size=encoder.config.vocab_size, bos_token_id=encoder.config.bos_token_id,
-                                       eos_token_id=encoder.config.eos_token_id,
-                                       pad_token_id=encoder.config.pad_token_id, hidden_size=encoder.config.hidden_size,
-                                       type_vocab_size=encoder.config.type_vocab_size,
-                                       num_hidden_layers=12, is_decoder=True,
-                                       add_cross_attention=True)
-        decoder = RobertaForCausalLM(decoder_config)
-
-        config = EncoderDecoderConfig.from_encoder_decoder_configs(encoder.config, decoder_config,
-                                                                   decoder_start_token_id=tokenizer.cls_token_id,
-                                                                   pad_token_id=tokenizer.pad_token_id)
-        model = MyHyperEncoderDecoderModel(config, encoder=encoder, decoder=decoder)
-
-        adapter_config = HGAdapterConfig(use_hyper=True)
-        encoder.add_adapter("code-summarization", config=adapter_config)
-        encoder.set_active_adapters("code-summarization")
-        encoder.train_adapter("code-summarization")
-
-        model.encoder.base_model.load_adapter(model_save_path)
-        model.decoder.load_state_dict(torch.load(os.path.join(model_save_path, "decoder_state.bin")))
-        model.to(device)
-
-        collate_fn = CodeSummarizationCSNHyperCollater(tokenizer)
-
-        test_dataset = CodeSummarizationCSNHyperDataset(test_data_path, test_src_data_path, tokenizer, parser,
-                                                        max_seq_len=512, overwrite=False)
-        test_dataloader = DataLoader(test_dataset, eval_batch_size, False, collate_fn=collate_fn)
-
-        test_loss, test_bleu4_micro, test_bleu4_macro = eval(model, test_dataloader, tokenizer, device, text_save_path)
-        print(f"{language} test loss={test_loss} bleu4-macro={test_bleu4_macro} bleu4-micro={test_bleu4_micro}")
-
-
 if __name__ == "__main__":
     main()
+
