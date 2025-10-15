@@ -56,7 +56,7 @@ def main():
     LANGUAGE = Language(tree_sitter_java.language())
     parser = Parser(LANGUAGE)
 
-    adapter_config = HGAdapterConfig(use_hyper=True, num_edge_types=3, reduction_factor=reduction_factor)
+    adapter_config = HGAdapterConfig(num_edge_types=3, reduction_factor=reduction_factor)
     roberta_model.add_adapter("clone-detection", config=adapter_config)
     roberta_model.set_active_adapters("clone-detection")
     roberta_model.train_adapter("clone-detection")
@@ -267,3 +267,4 @@ def tes(model, dataloader, thresold, device):
 
 if __name__ == "__main__":
     main()
+
