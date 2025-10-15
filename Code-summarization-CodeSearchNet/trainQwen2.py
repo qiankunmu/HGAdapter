@@ -60,8 +60,8 @@ def main():
                      "javascript": tree_sitter_javascript.language(), "go": tree_sitter_go.language(),
                      "php": tree_sitter_php.language_php()}
 
-    # languages = ["ruby", "python", "java", "javascript", "go", "php"]
-    languages = ["ruby"]
+    languages = ["ruby", "python", "java", "javascript", "go", "php"]
+    # languages = ["ruby"]
     result_record = {}
     for language in languages:
         print(f"start {language}")
@@ -288,4 +288,5 @@ def eval(model, dataloader, tokenizer, device, text_save_path=None):
 
 if __name__ == "__main__":
     main()
+
 
