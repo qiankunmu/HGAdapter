@@ -103,7 +103,7 @@ def main():
         # Initialize model
         model = MyQwen2HGAdapterForCausalLM.from_pretrained(pretrain_model_name_or_path, torch_dtype=torch.bfloat16, 
                                                             pad_token_id=tokenizer.pad_token_id)
-        adapter_config = HGAdapterConfig(use_hyper=True, reduction_factor=reduction_factor, num_heads=num_heads,
+        adapter_config = HGAdapterConfig(reduction_factor=reduction_factor, num_heads=num_heads,
                                          dropout=dropout_out, torch_dtype="bfloat16")
 
         model.model.add_adapter("code-summarization", config=adapter_config)
@@ -288,3 +288,4 @@ def eval(model, dataloader, tokenizer, device, text_save_path=None):
 
 if __name__ == "__main__":
     main()
+
