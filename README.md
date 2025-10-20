@@ -88,3 +88,14 @@ The implementation of the HGAdapter is located in the `models` folder.
 You can manually modify hyper-parameters such as `train_batch_size`, `num_epochs` in trainXXX.py.  
 Due to time constraints, we have not prepared a user-friendly parameter command for running the code. 
 We will optimize the code to make it easier for users to run directly in future.  
+
+## Citation
+If you use our code, please cite us.
+```
+@inproceedings{Yang2025HGAdapter,
+  title={HGAdapter: Hypergraph-based Adapters in Language Models for Code Summarization and Clone Detection},
+  author={Guang Yang and Yujie Zhu},
+  booktitle={Findings of the Association for Computational Linguistics: {EMNLP} 2025},
+  year={2025}
+}
+```
