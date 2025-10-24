@@ -1,6 +1,6 @@
 # Hypergraph-based Adapter (HGAdapter)
 ## Introduction
-This is the source code implementation of Hypergraph-based Adapter (HGAdapter) in paper *HGAdapter: Hypergraph-based Adapters in Language Models for Code Summarization and Clone Detection*. 
+This is the source code implementation of Hypergraph-based Adapter (HGAdapter) in paper [*HGAdapter: Hypergraph-based Adapters in Language Models for Code Summarization and Clone Detection*](https://arxiv.org/abs/2510.17591). 
 Our paper is accepted by the 2025 Conference on Empirical Methods in Natural Language Processing (EMNLP 2025) as a findings long paper.
 We will update this soon.
 
@@ -51,19 +51,19 @@ You can download [data.jsonl](https://github.com/microsoft/CodeXGLUE/blob/main/C
 
 
 ## Usages
-For code summarization task, you can run `trainLlama.py`, it can train, valid and test the Llama series models with HGAdapter inserted. 
+1\. For code summarization task, you can run `trainLlama.py`, it can train, valid and test the Llama series models with HGAdapter inserted. 
 You can modify `pretrain_model_name_or_path` in `trainLlama.py` to choose the pre-trained model, such as 
 ```
 pretrain_model_name_or_path = "CodeLlama-7b"
 ```
-You can also choose `"TinyLlama_v1.1_math_code"` or other Llama series models. 
+You can also choose `"TinyLlama_v1.1_math_code"` or other Llama series models.  
 
 You can run `trainHyper.py`, it can train, valid and test the RoBERTa series models with HGAdapter inserted. 
 You can modify `pretrain_model_name_or_path` in `trainHyper.py` to choose the pre-trained model, such as 
 ```
 pretrain_model_name_or_path = "codebert-base"
 ```
-You can also choose `"roberta-base"`, `"graphcodebert-base"`, `"unixcoder-base"` or other RoBERTa series models.
+You can also choose `"roberta-base"`, `"graphcodebert-base"`, `"unixcoder-base"` or other RoBERTa series models.  
 
 You can run `trainQwen2.py`, it can train, valid and test the Qwen2.5 series models with HGAdapter inserted. 
 You can modify `pretrain_model_name_or_path` in `trainQwen2.py` to choose the pre-trained model, such as 
@@ -72,22 +72,18 @@ pretrain_model_name_or_path = "Qwen2.5-Coder-0.5B"
 ```
 You can also choose other Qwen2.5 series models.
 
-For code clone detection, you can run `trainHyper.py`, it can train, valid and test the RoBERTa series models with HGAdapter inserted. 
+2\. For code clone detection, you can run `trainHyper.py`, it can train, valid and test the RoBERTa series models with HGAdapter inserted. 
 You can modify `pretrain_model_name_or_path` in `trainHyper.py` to choose the pre-trained model, such as 
 ```
 pretrain_model_name_or_path = "codebert-base"
 ```
 You can also choose `"graphcodebert-base"` and `"unixcoder-base"`. 
 
+3\. You can also locally download pre-trained models into `pre_train_models/`, modify the `pretrain_model_name_or_path` to the corresponding path.  
 
-You can also locally download pre-trained models into `pre_train_models/`, modify the `pretrain_model_name_or_path` to the corresponding path.  
-
-
-After the run is complete, the model will be saved to the `work_dir`, and the results will be outputted and saved as a CSV in `work_dir`.  
+4\. After the run is complete, the model will be saved to the `work_dir`, and the results will be outputted and saved as a CSV in `work_dir`.  
 The implementation of the HGAdapter is located in the `models` folder.  
 You can manually modify hyper-parameters such as `train_batch_size`, `num_epochs` in trainXXX.py.  
-Due to time constraints, we have not prepared a user-friendly parameter command for running the code. 
-We will optimize the code to make it easier for users to run directly in future.  
 
 ## Citation
 If you use our code, please cite us.
