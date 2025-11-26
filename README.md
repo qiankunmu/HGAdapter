@@ -1,11 +1,11 @@
 # Hypergraph-based Adapter (HGAdapter)
 ## Introduction
-This is the source code implementation of Hypergraph-based Adapter (HGAdapter) in paper [*HGAdapter: Hypergraph-based Adapters in Language Models for Code Summarization and Clone Detection*](https://aclanthology.org/2025.findings-emnlp.800/). 
+This is the source code implementation of Hypergraph-based Adapter (HGAdapter) in paper [*HGAdapter: Hypergraph-based Adapters in Language Models for Code Summarization and Clone Detection*](https://doi.org/10.18653/v1/2025.findings-emnlp.800). 
 Our paper is accepted by the 2025 Conference on Empirical Methods in Natural Language Processing (EMNLP 2025) as a findings long paper.
-We will update related content soon.
 
 ## Related Links
 [![paper](https://img.shields.io/badge/EMNLP_2025-Findings-gray?labelColor=E60012)](https://aclanthology.org/2025.findings-emnlp.800/) &nbsp;&nbsp; Official paper link [https://aclanthology.org/2025.findings-emnlp.800/](https://aclanthology.org/2025.findings-emnlp.800/)  
+[![doi](https://img.shields.io/badge/DOI-10.18653-blue?logo=doi)](https://doi.org/10.18653/v1/2025.findings-emnlp.800) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DOI reference number [10.18653/v1/2025.findings-emnlp.800](https://doi.org/10.18653/v1/2025.findings-emnlp.800)  
 [![arxiv](https://img.shields.io/badge/arXiv-2510.17591-b31b1b?logo=arxiv&logoColor=white)](https://arxiv.org/abs/2510.17591) &nbsp;&nbsp; Arxiv preprint paper link [https://arxiv.org/abs/2510.17591](https://arxiv.org/abs/2510.17591)  
 [![GitHub](https://img.shields.io/badge/GitHub-HGAdapter-181717?logo=github&logoColor=white)](https://github.com/qiankunmu/HGAdapter) &nbsp; Code implementation link [https://github.com/qiankunmu/HGAdapter](https://github.com/qiankunmu/HGAdapter)
 
