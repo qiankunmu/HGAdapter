@@ -98,6 +98,7 @@ If you use our code, please cite us.
   author={Guang Yang and Yujie Zhu},
   booktitle={Findings of the Association for Computational Linguistics: {EMNLP} 2025},
   pages={14823–14833},
-  year={2025}
+  year={2025},
+  doi={10.18653/v1/2025.findings-emnlp.800}
 }
 ```
