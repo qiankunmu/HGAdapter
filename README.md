@@ -1,6 +1,10 @@
 # Hypergraph-based Adapter (HGAdapter)
 ## Introduction
 This is the source code implementation of Hypergraph-based Adapter (HGAdapter) in paper [*HGAdapter: Hypergraph-based Adapters in Language Models for Code Summarization and Clone Detection*](https://doi.org/10.18653/v1/2025.findings-emnlp.800). 
+HGAdapter is a novel parameter-efficient fine-tuning method for code understanding with pre-trained language models. 
+It introduces three high-order structural correlations within code — AST family correlation, lexical correlation, and line correlation — into language models through an improved hypergraph neural network integrated with adapter tuning. 
+HGAdapter can be plugged into pre-trained language models for code-related tasks including code summarization and code clone detection.
+
 Our paper is accepted by the 2025 Conference on Empirical Methods in Natural Language Processing (EMNLP 2025) as a findings long paper.
 
 ## Related Links
